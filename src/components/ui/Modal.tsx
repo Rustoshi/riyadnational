@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactNode, useEffect, useCallback } from 'react';
+import { ReactNode, useEffect, useCallback, useRef } from 'react';
 import { X } from 'lucide-react';
 import { Button } from './Button';
 
@@ -11,15 +11,16 @@ interface ModalProps {
   description?: string;
   children: ReactNode;
   footer?: ReactNode;
-  size?: 'sm' | 'md' | 'lg' | 'xl';
+  size?: 'sm' | 'md' | 'lg' | 'xl' | 'full';
   closeOnOverlayClick?: boolean;
 }
 
 const sizeStyles = {
-  sm: 'max-w-sm',
-  md: 'max-w-md',
-  lg: 'max-w-lg',
-  xl: 'max-w-xl',
+  sm: 'sm:max-w-sm',
+  md: 'sm:max-w-md',
+  lg: 'sm:max-w-lg',
+  xl: 'sm:max-w-xl',
+  full: 'sm:max-w-3xl',
 };
 
 export function Modal({
@@ -32,6 +33,8 @@ export function Modal({
   size = 'md',
   closeOnOverlayClick = true,
 }: ModalProps) {
+  const contentRef = useRef<HTMLDivElement>(null);
+
   const handleEscape = useCallback(
     (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
@@ -46,61 +49,93 @@ export function Modal({
     }
     return () => {
       document.removeEventListener('keydown', handleEscape);
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = '';
     };
   }, [isOpen, handleEscape]);
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 flex flex-col items-end sm:items-center justify-end sm:justify-center">
       {/* Overlay */}
       <div
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
         onClick={closeOnOverlayClick ? onClose : undefined}
+        aria-hidden="true"
       />
 
-      {/* Modal */}
+      {/* Modal panel */}
       <div
         className={`
           relative w-full ${sizeStyles[size]}
-          bg-[var(--surface)] 
+          flex flex-col
+          bg-[var(--surface)]
           border border-[var(--border)]
-          rounded-[var(--radius-lg)]
-          shadow-lg
-          animate-in fade-in zoom-in-95 duration-200
+          rounded-t-2xl sm:rounded-2xl
+          shadow-2xl
+          max-h-[92dvh] sm:max-h-[88vh]
+          animate-in slide-in-from-bottom-4 sm:slide-in-from-bottom-0 sm:fade-in sm:zoom-in-95
+          duration-200
         `}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={title ? 'modal-title' : undefined}
       >
+        {/* Drag handle — mobile only */}
+        <div className="sm:hidden flex justify-center pt-3 pb-1 flex-shrink-0">
+          <div className="w-10 h-1 rounded-full bg-[var(--border)]" />
+        </div>
+
         {/* Header */}
         {(title || description) && (
-          <div className="flex items-start justify-between p-5 border-b border-[var(--border)]">
-            <div>
+          <div className="flex-shrink-0 flex items-start justify-between px-5 py-4 border-b border-[var(--border)]">
+            <div className="min-w-0 pr-4">
               {title && (
-                <h2 className="text-lg font-semibold text-[var(--text-primary)]">
+                <h2
+                  id="modal-title"
+                  className="text-base font-semibold text-[var(--text-primary)] leading-snug"
+                >
                   {title}
                 </h2>
               )}
               {description && (
-                <p className="mt-1 text-sm text-[var(--text-secondary)]">
+                <p className="mt-0.5 text-sm text-[var(--text-secondary)]">
                   {description}
                 </p>
               )}
             </div>
             <button
               onClick={onClose}
-              className="p-1 rounded-[var(--radius-md)] text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg)] transition-colors"
+              className="flex-shrink-0 p-1.5 rounded-lg text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg)] transition-colors"
+              aria-label="Close"
             >
               <X className="w-5 h-5" />
             </button>
           </div>
         )}
 
-        {/* Content */}
-        <div className="p-5">{children}</div>
+        {/* Close button when no header */}
+        {!title && !description && (
+          <button
+            onClick={onClose}
+            className="absolute top-4 right-4 p-1.5 rounded-lg text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg)] transition-colors z-10"
+            aria-label="Close"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        )}
 
-        {/* Footer */}
+        {/* Scrollable content */}
+        <div
+          ref={contentRef}
+          className="flex-1 overflow-y-auto overscroll-contain px-5 py-5 min-h-0"
+        >
+          {children}
+        </div>
+
+        {/* Footer — always visible, never scrolls away */}
         {footer && (
-          <div className="flex items-center justify-end gap-3 p-5 border-t border-[var(--border)]">
+          <div className="flex-shrink-0 flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 sm:gap-3 px-5 py-4 border-t border-[var(--border)] bg-[var(--surface)]">
             {footer}
           </div>
         )}
@@ -134,20 +169,33 @@ export function ConfirmDialog({
   isLoading = false,
 }: ConfirmDialogProps) {
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={title} size="sm">
-      <p className="text-sm text-[var(--text-secondary)]">{message}</p>
-      <div className="flex items-center justify-end gap-3 mt-6">
-        <Button variant="secondary" onClick={onClose} disabled={isLoading}>
-          {cancelText}
-        </Button>
-        <Button
-          variant={variant === 'danger' ? 'danger' : 'primary'}
-          onClick={onConfirm}
-          isLoading={isLoading}
-        >
-          {confirmText}
-        </Button>
-      </div>
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title={title}
+      size="sm"
+      footer={
+        <>
+          <Button
+            variant="secondary"
+            onClick={onClose}
+            disabled={isLoading}
+            className="w-full sm:w-auto"
+          >
+            {cancelText}
+          </Button>
+          <Button
+            variant={variant === 'danger' ? 'danger' : 'primary'}
+            onClick={onConfirm}
+            isLoading={isLoading}
+            className="w-full sm:w-auto"
+          >
+            {confirmText}
+          </Button>
+        </>
+      }
+    >
+      <p className="text-sm text-[var(--text-secondary)] leading-relaxed">{message}</p>
     </Modal>
   );
 }

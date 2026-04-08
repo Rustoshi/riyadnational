@@ -193,7 +193,14 @@ export default function PlansPage() {
       </Card>
 
       {/* Create Modal */}
-      <Modal isOpen={showCreate} onClose={() => setShowCreate(false)} title="Create Investment Plan" size="md">
+      <Modal isOpen={showCreate} onClose={() => setShowCreate(false)} title="Create Investment Plan" size="md"
+        footer={
+          <>
+            <Button variant="secondary" onClick={() => setShowCreate(false)} className="w-full sm:w-auto">Cancel</Button>
+            <Button onClick={handleCreate} isLoading={isProcessing} className="w-full sm:w-auto">Create Plan</Button>
+          </>
+        }
+      >
         <div className="space-y-4">
           <Input label="Plan Name" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} placeholder="e.g., Starter Plan" />
           <Input label="Description" value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} placeholder="Brief description" />
@@ -205,15 +212,18 @@ export default function PlansPage() {
             <Input label="Return %" type="number" value={formData.returnPercentage} onChange={(e) => setFormData({ ...formData, returnPercentage: e.target.value })} placeholder="10" />
             <Input label="Duration (days)" type="number" value={formData.durationDays} onChange={(e) => setFormData({ ...formData, durationDays: e.target.value })} placeholder="30" />
           </div>
-          <div className="flex justify-end gap-3 pt-4">
-            <Button variant="secondary" onClick={() => setShowCreate(false)}>Cancel</Button>
-            <Button onClick={handleCreate} isLoading={isProcessing}>Create Plan</Button>
-          </div>
         </div>
       </Modal>
 
       {/* Edit Modal */}
-      <Modal isOpen={showEdit} onClose={() => { setShowEdit(false); setSelected(null); }} title="Edit Investment Plan" size="md">
+      <Modal isOpen={showEdit} onClose={() => { setShowEdit(false); setSelected(null); }} title="Edit Investment Plan" size="md"
+        footer={
+          <>
+            <Button variant="secondary" onClick={() => { setShowEdit(false); setSelected(null); }} className="w-full sm:w-auto">Cancel</Button>
+            <Button onClick={handleUpdate} isLoading={isProcessing} className="w-full sm:w-auto">Save Changes</Button>
+          </>
+        }
+      >
         <div className="space-y-4">
           <Input label="Plan Name" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} />
           <Input label="Description" value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} />
@@ -224,10 +234,6 @@ export default function PlansPage() {
           <div className="grid grid-cols-2 gap-4">
             <Input label="Return %" type="number" value={formData.returnPercentage} onChange={(e) => setFormData({ ...formData, returnPercentage: e.target.value })} />
             <Input label="Duration (days)" type="number" value={formData.durationDays} onChange={(e) => setFormData({ ...formData, durationDays: e.target.value })} />
-          </div>
-          <div className="flex justify-end gap-3 pt-4">
-            <Button variant="secondary" onClick={() => { setShowEdit(false); setSelected(null); }}>Cancel</Button>
-            <Button onClick={handleUpdate} isLoading={isProcessing}>Save Changes</Button>
           </div>
         </div>
       </Modal>

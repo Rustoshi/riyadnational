@@ -150,29 +150,35 @@ export default function CryptoPage() {
         </Table>
       </Card>
 
-      <Modal isOpen={showCreate} onClose={() => setShowCreate(false)} title="Add Crypto Asset" size="sm">
+      <Modal isOpen={showCreate} onClose={() => setShowCreate(false)} title="Add Crypto Asset" size="sm"
+        footer={
+          <>
+            <Button variant="secondary" onClick={() => setShowCreate(false)} className="w-full sm:w-auto">Cancel</Button>
+            <Button onClick={handleCreate} isLoading={isProcessing} className="w-full sm:w-auto">Add Asset</Button>
+          </>
+        }
+      >
         <div className="space-y-4">
           <Input label="Name" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} placeholder="Bitcoin" />
           <Input label="Symbol" value={formData.symbol} onChange={(e) => setFormData({ ...formData, symbol: e.target.value })} placeholder="BTC" />
           <Input label="Price (USD)" type="number" value={formData.price} onChange={(e) => setFormData({ ...formData, price: e.target.value })} placeholder="50000" />
           <Input label="24h Change (%)" type="number" value={formData.change24h} onChange={(e) => setFormData({ ...formData, change24h: e.target.value })} placeholder="2.5" />
-          <div className="flex justify-end gap-3 pt-4">
-            <Button variant="secondary" onClick={() => setShowCreate(false)}>Cancel</Button>
-            <Button onClick={handleCreate} isLoading={isProcessing}>Add Asset</Button>
-          </div>
         </div>
       </Modal>
 
-      <Modal isOpen={showEdit} onClose={() => { setShowEdit(false); setSelected(null); }} title="Edit Crypto Asset" size="sm">
+      <Modal isOpen={showEdit} onClose={() => { setShowEdit(false); setSelected(null); }} title="Edit Crypto Asset" size="sm"
+        footer={
+          <>
+            <Button variant="secondary" onClick={() => { setShowEdit(false); setSelected(null); }} className="w-full sm:w-auto">Cancel</Button>
+            <Button onClick={handleUpdate} isLoading={isProcessing} className="w-full sm:w-auto">Save Changes</Button>
+          </>
+        }
+      >
         <div className="space-y-4">
           <Input label="Name" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} />
           <Input label="Symbol" value={formData.symbol} onChange={(e) => setFormData({ ...formData, symbol: e.target.value })} />
           <Input label="Price (USD)" type="number" value={formData.price} onChange={(e) => setFormData({ ...formData, price: e.target.value })} />
           <Input label="24h Change (%)" type="number" value={formData.change24h} onChange={(e) => setFormData({ ...formData, change24h: e.target.value })} />
-          <div className="flex justify-end gap-3 pt-4">
-            <Button variant="secondary" onClick={() => { setShowEdit(false); setSelected(null); }}>Cancel</Button>
-            <Button onClick={handleUpdate} isLoading={isProcessing}>Save Changes</Button>
-          </div>
         </div>
       </Modal>
 

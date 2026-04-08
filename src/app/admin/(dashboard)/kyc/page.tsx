@@ -228,9 +228,9 @@ export default function KycPage() {
               )}
             </div>
             {selected.status === 'pending' && (
-              <div className="flex justify-end gap-3 pt-4 border-t border-[var(--border)]">
-                <Button variant="danger" onClick={() => { setShowView(false); setShowReject(true); }}>Reject</Button>
-                <Button onClick={() => { setShowView(false); setShowApprove(true); }}>Approve</Button>
+              <div className="flex flex-col-reverse sm:flex-row justify-end gap-2 sm:gap-3 pt-4 border-t border-[var(--border)]">
+                <Button variant="danger" onClick={() => { setShowView(false); setShowReject(true); }} className="w-full sm:w-auto">Reject</Button>
+                <Button onClick={() => { setShowView(false); setShowApprove(true); }} className="w-full sm:w-auto">Approve</Button>
               </div>
             )}
           </div>
@@ -239,14 +239,17 @@ export default function KycPage() {
 
       <ConfirmDialog isOpen={showApprove} onClose={() => { setShowApprove(false); setSelected(null); }} onConfirm={() => handleAction('approve')} title="Approve KYC" message={`Approve KYC verification for ${selected?.user?.name}?`} confirmText="Approve" variant="primary" isLoading={isProcessing} />
 
-      <Modal isOpen={showReject} onClose={() => { setShowReject(false); setSelected(null); setRejectReason(''); }} title="Reject KYC" size="sm">
+      <Modal isOpen={showReject} onClose={() => { setShowReject(false); setSelected(null); setRejectReason(''); }} title="Reject KYC" size="sm"
+        footer={
+          <>
+            <Button variant="secondary" onClick={() => { setShowReject(false); setSelected(null); setRejectReason(''); }} className="w-full sm:w-auto">Cancel</Button>
+            <Button variant="danger" onClick={() => handleAction('reject')} isLoading={isProcessing} className="w-full sm:w-auto">Reject</Button>
+          </>
+        }
+      >
         <div className="space-y-4">
           <p className="text-sm text-[var(--text-secondary)]">Reject KYC verification for <span className="font-semibold">{selected?.user?.name}</span>?</p>
           <Input label="Reason" placeholder="Enter rejection reason..." value={rejectReason} onChange={(e) => setRejectReason(e.target.value)} />
-          <div className="flex justify-end gap-3">
-            <Button variant="secondary" onClick={() => { setShowReject(false); setSelected(null); setRejectReason(''); }}>Cancel</Button>
-            <Button variant="danger" onClick={() => handleAction('reject')} isLoading={isProcessing}>Reject</Button>
-          </div>
         </div>
       </Modal>
     </div>

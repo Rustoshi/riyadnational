@@ -371,19 +371,29 @@ export default function WithdrawalsPage() {
 
       <ConfirmDialog isOpen={showApprove} onClose={() => { setShowApprove(false); setSelected(null); }} onConfirm={() => handleAction('approve')} title="Approve Withdrawal" message={`Approve withdrawal of ${selected ? formatCurrency(selected.amount) : ''}? Funds will be sent to the user.`} confirmText="Approve" variant="primary" isLoading={isProcessing} />
 
-      <Modal isOpen={showReject} onClose={() => { setShowReject(false); setSelected(null); setRejectReason(''); }} title="Reject Withdrawal" size="sm">
+      <Modal isOpen={showReject} onClose={() => { setShowReject(false); setSelected(null); setRejectReason(''); }} title="Reject Withdrawal" size="sm"
+        footer={
+          <>
+            <Button variant="secondary" onClick={() => { setShowReject(false); setSelected(null); setRejectReason(''); }} className="w-full sm:w-auto">Cancel</Button>
+            <Button variant="danger" onClick={() => handleAction('reject')} isLoading={isProcessing} className="w-full sm:w-auto">Reject</Button>
+          </>
+        }
+      >
         <div className="space-y-4">
           <p className="text-sm text-[var(--text-secondary)]">Reject withdrawal of <span className="font-semibold">{selected ? formatCurrency(selected.amount) : ''}</span>? Amount will be refunded.</p>
           <Input label="Reason (optional)" placeholder="Enter reason..." value={rejectReason} onChange={(e) => setRejectReason(e.target.value)} />
-          <div className="flex justify-end gap-3">
-            <Button variant="secondary" onClick={() => { setShowReject(false); setSelected(null); setRejectReason(''); }}>Cancel</Button>
-            <Button variant="danger" onClick={() => handleAction('reject')} isLoading={isProcessing}>Reject</Button>
-          </div>
         </div>
       </Modal>
 
       {/* Edit Modal */}
-      <Modal isOpen={showEdit} onClose={() => { setShowEdit(false); setSelected(null); }} title="Edit Withdrawal" size="md">
+      <Modal isOpen={showEdit} onClose={() => { setShowEdit(false); setSelected(null); }} title="Edit Withdrawal" size="md"
+        footer={
+          <>
+            <Button variant="secondary" onClick={() => { setShowEdit(false); setSelected(null); }} className="w-full sm:w-auto">Cancel</Button>
+            <Button onClick={handleEdit} isLoading={isProcessing} className="w-full sm:w-auto">Save Changes</Button>
+          </>
+        }
+      >
         {selected && (
           <div className="space-y-4">
             <Input label="Amount" type="number" value={editForm.amount} onChange={(e) => setEditForm({ ...editForm, amount: parseFloat(e.target.value) || 0 })} />
@@ -408,10 +418,6 @@ export default function WithdrawalsPage() {
               <Input label="Fee" type="number" value={editForm.fee} onChange={(e) => setEditForm({ ...editForm, fee: parseFloat(e.target.value) || 0 })} />
             )}
             <Input label="Date" type="datetime-local" value={editForm.createdAt} onChange={(e) => setEditForm({ ...editForm, createdAt: e.target.value })} />
-            <div className="flex justify-end gap-3 pt-4">
-              <Button variant="secondary" onClick={() => { setShowEdit(false); setSelected(null); }}>Cancel</Button>
-              <Button onClick={handleEdit} isLoading={isProcessing}>Save Changes</Button>
-            </div>
           </div>
         )}
       </Modal>

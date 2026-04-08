@@ -547,36 +547,19 @@ export default function DepositsPage() {
         }}
         title="Reject Deposit"
         size="sm"
+        footer={
+          <>
+            <Button variant="secondary" onClick={() => { setShowRejectDialog(false); setSelectedDeposit(null); setRejectReason(''); }} className="w-full sm:w-auto">Cancel</Button>
+            <Button variant="danger" onClick={handleReject} isLoading={isProcessing} className="w-full sm:w-auto">Reject</Button>
+          </>
+        }
       >
         <div className="space-y-4">
           <p className="text-sm text-[var(--text-secondary)]">
             Are you sure you want to reject this deposit of{' '}
-            <span className="font-semibold">
-              {selectedDeposit ? formatCurrency(selectedDeposit.amount) : ''}
-            </span>
-            ?
+            <span className="font-semibold">{selectedDeposit ? formatCurrency(selectedDeposit.amount) : ''}</span>?
           </p>
-          <Input
-            label="Reason (optional)"
-            placeholder="Enter reason for rejection..."
-            value={rejectReason}
-            onChange={(e) => setRejectReason(e.target.value)}
-          />
-          <div className="flex justify-end gap-3">
-            <Button
-              variant="secondary"
-              onClick={() => {
-                setShowRejectDialog(false);
-                setSelectedDeposit(null);
-                setRejectReason('');
-              }}
-            >
-              Cancel
-            </Button>
-            <Button variant="danger" onClick={handleReject} isLoading={isProcessing}>
-              Reject
-            </Button>
-          </div>
+          <Input label="Reason (optional)" placeholder="Enter reason for rejection..." value={rejectReason} onChange={(e) => setRejectReason(e.target.value)} />
         </div>
       </Modal>
 
@@ -589,15 +572,20 @@ export default function DepositsPage() {
         }}
         title="Edit Deposit"
         size="md"
+        footer={
+          <>
+            <Button variant="secondary" onClick={() => { setShowEditModal(false); setSelectedDeposit(null); }} className="w-full sm:w-auto">
+              Cancel
+            </Button>
+            <Button onClick={handleEdit} isLoading={isProcessing} className="w-full sm:w-auto">
+              Save Changes
+            </Button>
+          </>
+        }
       >
         {selectedDeposit && (
           <div className="space-y-4">
-            <Input
-              label="Amount"
-              type="number"
-              value={editForm.amount}
-              onChange={(e) => setEditForm({ ...editForm, amount: parseFloat(e.target.value) || 0 })}
-            />
+            <Input label="Amount" type="number" value={editForm.amount} onChange={(e) => setEditForm({ ...editForm, amount: parseFloat(e.target.value) || 0 })} />
             <Select
               label="Status"
               value={editForm.status}
@@ -610,45 +598,12 @@ export default function DepositsPage() {
             />
             {selectedDeposit.source === 'admin' && (
               <>
-                <Input
-                  label="Description"
-                  value={editForm.description}
-                  onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
-                />
-                <Input
-                  label="Balance Before"
-                  type="number"
-                  value={editForm.balanceBefore}
-                  onChange={(e) => setEditForm({ ...editForm, balanceBefore: parseFloat(e.target.value) || 0 })}
-                />
-                <Input
-                  label="Balance After"
-                  type="number"
-                  value={editForm.balanceAfter}
-                  onChange={(e) => setEditForm({ ...editForm, balanceAfter: parseFloat(e.target.value) || 0 })}
-                />
+                <Input label="Description" value={editForm.description} onChange={(e) => setEditForm({ ...editForm, description: e.target.value })} />
+                <Input label="Balance Before" type="number" value={editForm.balanceBefore} onChange={(e) => setEditForm({ ...editForm, balanceBefore: parseFloat(e.target.value) || 0 })} />
+                <Input label="Balance After" type="number" value={editForm.balanceAfter} onChange={(e) => setEditForm({ ...editForm, balanceAfter: parseFloat(e.target.value) || 0 })} />
               </>
             )}
-            <Input
-              label="Date"
-              type="datetime-local"
-              value={editForm.createdAt}
-              onChange={(e) => setEditForm({ ...editForm, createdAt: e.target.value })}
-            />
-            <div className="flex justify-end gap-3 pt-4">
-              <Button
-                variant="secondary"
-                onClick={() => {
-                  setShowEditModal(false);
-                  setSelectedDeposit(null);
-                }}
-              >
-                Cancel
-              </Button>
-              <Button onClick={handleEdit} isLoading={isProcessing}>
-                Save Changes
-              </Button>
-            </div>
+            <Input label="Date" type="datetime-local" value={editForm.createdAt} onChange={(e) => setEditForm({ ...editForm, createdAt: e.target.value })} />
           </div>
         )}
       </Modal>

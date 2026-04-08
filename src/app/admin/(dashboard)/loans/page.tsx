@@ -242,14 +242,17 @@ export default function LoansPage() {
 
       <ConfirmDialog isOpen={showApprove} onClose={() => { setShowApprove(false); setSelected(null); }} onConfirm={() => handleAction('approve')} title="Approve Loan" message={`Approve loan of ${selected ? formatCurrency(selected.amount) : ''} for ${selected?.user?.name}?`} confirmText="Approve" variant="primary" isLoading={isProcessing} />
 
-      <Modal isOpen={showReject} onClose={() => { setShowReject(false); setSelected(null); setRejectReason(''); }} title="Reject Loan" size="sm">
+      <Modal isOpen={showReject} onClose={() => { setShowReject(false); setSelected(null); setRejectReason(''); }} title="Reject Loan" size="sm"
+        footer={
+          <>
+            <Button variant="secondary" onClick={() => { setShowReject(false); setSelected(null); setRejectReason(''); }} className="w-full sm:w-auto">Cancel</Button>
+            <Button variant="danger" onClick={() => handleAction('reject')} isLoading={isProcessing} className="w-full sm:w-auto">Reject</Button>
+          </>
+        }
+      >
         <div className="space-y-4">
           <p className="text-sm text-[var(--text-secondary)]">Reject loan application of <span className="font-semibold">{selected ? formatCurrency(selected.amount) : ''}</span>?</p>
           <Input label="Reason" placeholder="Enter rejection reason..." value={rejectReason} onChange={(e) => setRejectReason(e.target.value)} />
-          <div className="flex justify-end gap-3">
-            <Button variant="secondary" onClick={() => { setShowReject(false); setSelected(null); setRejectReason(''); }}>Cancel</Button>
-            <Button variant="danger" onClick={() => handleAction('reject')} isLoading={isProcessing}>Reject</Button>
-          </div>
         </div>
       </Modal>
     </div>

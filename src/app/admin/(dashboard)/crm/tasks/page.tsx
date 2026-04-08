@@ -183,7 +183,14 @@ export default function TasksPage() {
         </Table>
       </Card>
 
-      <Modal isOpen={showCreate} onClose={() => setShowCreate(false)} title="Add Task" size="md">
+      <Modal isOpen={showCreate} onClose={() => setShowCreate(false)} title="Add Task" size="md"
+        footer={
+          <>
+            <Button variant="secondary" onClick={() => setShowCreate(false)} className="w-full sm:w-auto">Cancel</Button>
+            <Button onClick={handleCreate} isLoading={isProcessing} className="w-full sm:w-auto">Add Task</Button>
+          </>
+        }
+      >
         <div className="space-y-4">
           <Input label="Title" value={formData.title} onChange={(e) => setFormData({ ...formData, title: e.target.value })} placeholder="Task title" />
           <div>
@@ -194,14 +201,17 @@ export default function TasksPage() {
             <Select label="Priority" options={[{ value: 'low', label: 'Low' }, { value: 'medium', label: 'Medium' }, { value: 'high', label: 'High' }]} value={formData.priority} onChange={(e) => setFormData({ ...formData, priority: e.target.value })} />
             <Input label="Due Date" type="date" value={formData.dueDate} onChange={(e) => setFormData({ ...formData, dueDate: e.target.value })} />
           </div>
-          <div className="flex justify-end gap-3 pt-4">
-            <Button variant="secondary" onClick={() => setShowCreate(false)}>Cancel</Button>
-            <Button onClick={handleCreate} isLoading={isProcessing}>Add Task</Button>
-          </div>
         </div>
       </Modal>
 
-      <Modal isOpen={showEdit} onClose={() => { setShowEdit(false); setSelected(null); }} title="Edit Task" size="md">
+      <Modal isOpen={showEdit} onClose={() => { setShowEdit(false); setSelected(null); }} title="Edit Task" size="md"
+        footer={
+          <>
+            <Button variant="secondary" onClick={() => { setShowEdit(false); setSelected(null); }} className="w-full sm:w-auto">Cancel</Button>
+            <Button onClick={handleUpdate} isLoading={isProcessing} className="w-full sm:w-auto">Save Changes</Button>
+          </>
+        }
+      >
         <div className="space-y-4">
           <Input label="Title" value={formData.title} onChange={(e) => setFormData({ ...formData, title: e.target.value })} />
           <div>
@@ -211,10 +221,6 @@ export default function TasksPage() {
           <div className="grid grid-cols-2 gap-4">
             <Select label="Priority" options={[{ value: 'low', label: 'Low' }, { value: 'medium', label: 'Medium' }, { value: 'high', label: 'High' }]} value={formData.priority} onChange={(e) => setFormData({ ...formData, priority: e.target.value })} />
             <Input label="Due Date" type="date" value={formData.dueDate} onChange={(e) => setFormData({ ...formData, dueDate: e.target.value })} />
-          </div>
-          <div className="flex justify-end gap-3 pt-4">
-            <Button variant="secondary" onClick={() => { setShowEdit(false); setSelected(null); }}>Cancel</Button>
-            <Button onClick={handleUpdate} isLoading={isProcessing}>Save Changes</Button>
           </div>
         </div>
       </Modal>
