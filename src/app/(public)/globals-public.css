@@ -1,0 +1,29 @@
+/* Client/Public Side Color Presets */
+
+:root {
+  /* Light Mode (Default) */
+  --public-bg: #F7F9FC;
+  --public-surface: #FFFFFF;
+  --public-primary: #2563EB;
+  --public-primary-soft: #DBEAFE;
+  --public-accent: #22C55E;
+  --public-text-primary: #0F172A;
+  --public-text-secondary: #475569;
+  --public-border: #E2E8F0;
+  --public-error: #DC2626;
+  --public-warning: #F59E0B;
+}
+
+.dark {
+  /* Dark Mode */
+  --public-bg: #0B1220;
+  --public-surface: #111827;
+  --public-primary: #3B82F6;
+  --public-primary-soft: #1E3A8A;
+  --public-accent: #22C55E;
+  --public-text-primary: #F8FAFC;
+  --public-text-secondary: #94A3B8;
+  --public-border: #1F2937;
+  --public-error: #F87171;
+  --public-warning: #FBBF24;
+}

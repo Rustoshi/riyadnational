@@ -1,0 +1,233 @@
+@import "tailwindcss";
+
+/* Design System - Chase Bank Inspired */
+/* Official Chase Colors: #117ACA (Chase Blue), #004B87 (Navy) */
+
+:root {
+  /* Primary Palette - Chase Blue */
+  --primary: #117ACA;
+  --primary-hover: #0e6bb5;
+  --primary-light: rgba(17, 122, 202, 0.1);
+
+  /* Semantic Colors */
+  --success: #22C55E;
+  --success-light: rgba(34, 197, 94, 0.1);
+  --warning: #D97706;
+  --warning-light: rgba(217, 119, 6, 0.1);
+  --error: #EF4444;
+  --error-light: rgba(239, 68, 68, 0.1);
+
+  /* Light Mode (Default) */
+  --bg: #F8FAFC;
+  --surface: #FFFFFF;
+  --border: #E5E7EB;
+  --text-primary: #0F172A;
+  --text-secondary: #475569;
+  --text-muted: #94A3B8;
+
+  /* Spacing */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.dark {
+  --bg: #0F172A;
+  --surface: #1E293B;
+  --border: #334155;
+  --text-primary: #F1F5F9;
+  --text-secondary: #94A3B8;
+  --text-muted: #64748B;
+}
+
+@theme inline {
+  /* Colors */
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-light: var(--primary-light);
+  --color-success: var(--success);
+  --color-success-light: var(--success-light);
+  --color-warning: var(--warning);
+  --color-warning-light: var(--warning-light);
+  --color-error: var(--error);
+  --color-error-light: var(--error-light);
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-border: var(--border);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+
+  /* Border Radius */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+
+  /* Font */
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* Base Styles */
+html {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text-primary);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overscroll-behavior-y: none;
+}
+
+/* Typography */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 600;
+}
+
+/* Focus States */
+*:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* Selection */
+::selection {
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.2s ease-out;
+}
+
+/* Floating orb animations */
+@keyframes float-slow {
+
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+
+  25% {
+    transform: translate(30px, -20px);
+  }
+
+  50% {
+    transform: translate(10px, 30px);
+  }
+
+  75% {
+    transform: translate(-20px, 10px);
+  }
+}
+
+@keyframes float-slower {
+
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+
+  25% {
+    transform: translate(-25px, 15px);
+  }
+
+  50% {
+    transform: translate(20px, -25px);
+  }
+
+  75% {
+    transform: translate(15px, 20px);
+  }
+}
+
+@keyframes float-reverse {
+
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+
+  25% {
+    transform: translate(-15px, -25px);
+  }
+
+  50% {
+    transform: translate(-30px, 15px);
+  }
+
+  75% {
+    transform: translate(20px, -10px);
+  }
+}
+
+.animate-float-slow {
+  animation: float-slow 20s ease-in-out infinite;
+}
+
+.animate-float-slower {
+  animation: float-slower 25s ease-in-out infinite;
+}
+
+.animate-float-reverse {
+  animation: float-reverse 22s ease-in-out infinite;
+}
+
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Hide scrollbar for swipeable cards */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}

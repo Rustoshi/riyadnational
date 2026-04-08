@@ -1,0 +1,21 @@
+{
+  "name": "Oakwell Trust - Online Banking",
+  "short_name": "Oakwell Trust",
+  "description": "Secure online banking with Oakwell Trust. Manage your accounts, transfer funds, and access financial services anytime, anywhere.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0369a1",
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
