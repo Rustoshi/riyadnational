@@ -84,6 +84,8 @@ interface DashboardData {
   monthlyIncome: number;
   monthlyExpenses: number;
   transactionLimit: number;
+  dailyTransferLimit: number;
+  dailyWithdrawalLimit: number;
   pendingTransactions: number;
   transactionVolume: number;
   recentTransactions: Transaction[];
@@ -104,6 +106,8 @@ export default function DashboardPage() {
     monthlyIncome: 0,
     monthlyExpenses: 0,
     transactionLimit: 50000,
+    dailyTransferLimit: 50000,
+    dailyWithdrawalLimit: 50000,
     pendingTransactions: 0,
     transactionVolume: 0,
     recentTransactions: [],
@@ -170,7 +174,9 @@ export default function DashboardPage() {
               bitcoinBalance: userData.bitcoinBalance || 0,
               monthlyIncome: data.data.stats?.totalDeposits || 0,
               monthlyExpenses: data.data.stats?.totalWithdrawals || 0,
-              transactionLimit: userData.transactionLimit || 50000,
+              transactionLimit: userData.dailyTransferLimit || 50000,
+              dailyTransferLimit: userData.dailyTransferLimit || 50000,
+              dailyWithdrawalLimit: userData.dailyWithdrawalLimit || 50000,
               pendingTransactions: data.data.pendingTransactions || 0,
               transactionVolume: data.data.stats?.totalTransfers || 0,
               recentTransactions: mappedTransactions,
@@ -188,7 +194,7 @@ export default function DashboardPage() {
     fetchDashboardData();
   }, []);
 
-  const { balance: accountBalance, bitcoinBalance, monthlyIncome, monthlyExpenses, transactionLimit } = dashboardData;
+  const { balance: accountBalance, bitcoinBalance, monthlyIncome, monthlyExpenses, transactionLimit, dailyTransferLimit, dailyWithdrawalLimit  } = dashboardData;
 
   useEffect(() => {
     const updateTime = () => {
@@ -956,8 +962,17 @@ export default function DashboardPage() {
                   <CreditCard className="h-5 w-5 text-blue-400" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm text-white">Transaction Limit</p>
-                  <p className="text-lg font-bold text-white truncate">{currencySymbol}{formatCurrency(transactionLimit)}</p>
+                  <p className="text-sm text-white">Daily Transfer Limit</p>
+                  <p className="text-lg font-bold text-white truncate">{currencySymbol}{formatCurrency(dailyTransferLimit)}</p>
+                </div>
+              </div>
+              <div className="flex items-center">
+                <div className="h-10 w-10 rounded-full bg-blue-500/20 flex items-center justify-center mr-4">
+                  <CreditCard className="h-5 w-5 text-blue-400" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm text-white">Daily Withdrawal Limit</p>
+                  <p className="text-lg font-bold text-white truncate">{currencySymbol}{formatCurrency(dailyWithdrawalLimit)}</p>
                 </div>
               </div>
               <div className="flex items-center">
