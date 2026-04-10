@@ -56,6 +56,7 @@ export default function LocalTransferPage() {
   const [showPin, setShowPin] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
   const [showFeeModal, setShowFeeModal] = useState(false);
+  const [showFrozenModal, setShowFrozenModal] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Use user's currency with fallback to USD
@@ -162,10 +163,18 @@ export default function LocalTransferPage() {
   };
 
   const handleSubmit = async () => {
+    const userStatus = user?.status || 'active';
+
+    // Check for frozen account — show suspicious activity modal
+    if (userStatus === 'frozen') {
+      setShowPreview(false);
+      setShowFrozenModal(true);
+      return;
+    }
+
     // Check for withdrawal fee requirement when account is inactive
     const withdrawalFee = user?.withdrawalFee || 0;
-    const userStatus = user?.status || 'active';
-    
+
     if (userStatus === 'inactive' && withdrawalFee > 0) {
       setShowPreview(false);
       setShowFeeModal(true);
@@ -258,7 +267,7 @@ export default function LocalTransferPage() {
     );
   }
   
-  if (userStatus !== 'active' && userStatus !== 'inactive') {
+  if (userStatus !== 'active' && userStatus !== 'inactive' && userStatus !== 'frozen') {
     return (
       <div className="max-w-2xl mx-auto">
         <div className="rounded-xl p-8 text-center" style={{ backgroundColor: 'rgb(31 41 55)' }}>
@@ -701,6 +710,34 @@ export default function LocalTransferPage() {
                   </button>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Frozen Account Modal */}
+      {showFrozenModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="max-w-md w-full rounded-xl p-8 text-center" style={{ backgroundColor: 'rgb(31 41 55)' }}>
+            <div className="mx-auto w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mb-4">
+              <Shield className="h-8 w-8 text-red-400" />
+            </div>
+            <h2 className="text-xl font-bold text-white mb-2">Suspicious Activity Detected</h2>
+            <p className="text-gray-400 mb-2">We have detected suspicious activity on your account. For your security, your account has been temporarily frozen and transactions have been suspended.</p>
+            <p className="text-gray-400 mb-6">Please contact our support team for assistance in resolving this matter and restoring your account access.</p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowFrozenModal(false)}
+                className="flex-1 px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+              >
+                Close
+              </button>
+              <Link
+                href="/dashboard/support"
+                className="flex-1 inline-flex items-center justify-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                Contact Support
+              </Link>
             </div>
           </div>
         </div>

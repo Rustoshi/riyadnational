@@ -1286,6 +1286,7 @@ export default function UserDetailsPage() {
               { value: 'suspended', label: 'Suspended' },
               { value: 'blocked', label: 'Blocked' },
               { value: 'dormant', label: 'Dormant' },
+              { value: 'frozen', label: 'Frozen' },
             ]}
             value={editForm.status}
             onChange={(e) => setEditForm({ ...editForm, status: e.target.value })}

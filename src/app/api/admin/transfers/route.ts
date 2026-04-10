@@ -142,9 +142,32 @@ export async function PUT(request: NextRequest) {
           if (editData.status === 'completed') transfer.status = TransferStatus.COMPLETED;
           else if (editData.status === 'failed') transfer.status = TransferStatus.FAILED;
           else if (editData.status === 'pending') transfer.status = TransferStatus.PENDING;
+          else if (editData.status === 'processing') transfer.status = TransferStatus.PROCESSING;
         }
 
         await transfer.save();
+
+        // Also sync the corresponding Transaction record so user dashboard stays in sync
+        const txnUpdate: Record<string, unknown> = {};
+        if (editData.status !== undefined) {
+          const statusMap: Record<string, string> = {
+            completed: TransactionStatus.COMPLETED,
+            failed: TransactionStatus.FAILED,
+            pending: TransactionStatus.PENDING,
+            processing: TransactionStatus.PENDING,
+          };
+          txnUpdate.status = statusMap[editData.status] || TransactionStatus.PENDING;
+        }
+        if (editData.amount !== undefined) txnUpdate.amount = transfer.totalAmount;
+        if (editData.description !== undefined) txnUpdate.description = editData.description;
+
+        if (Object.keys(txnUpdate).length > 0) {
+          await Transaction.findOneAndUpdate(
+            { reference: transfer.reference },
+            txnUpdate
+          );
+        }
+
         return successResponse(transfer, 'Transfer updated successfully');
       } else {
         // Edit admin transaction
@@ -187,6 +210,55 @@ export async function PUT(request: NextRequest) {
       return errorResponse('Action is required', 400);
     }
 
+    // Determine if this is a user-initiated transfer (Transfer model) or admin-created (Transaction model)
+    // Try Transfer collection first, then fall back to Transaction
+    const transfer = await Transfer.findById(transferId);
+    if (transfer) {
+      // This is a user-initiated transfer — update the Transfer record
+      switch (action) {
+        case 'approve':
+          transfer.status = TransferStatus.COMPLETED;
+          transfer.processedAt = new Date();
+          break;
+        case 'reject':
+          transfer.status = TransferStatus.FAILED;
+          transfer.processedAt = new Date();
+          break;
+        case 'processing':
+          transfer.status = TransferStatus.PROCESSING;
+          break;
+        default:
+          return errorResponse('Invalid action', 400);
+      }
+
+      await transfer.save();
+
+      // Also update the corresponding Transaction record so it shows on user dashboard
+      const txnStatus = action === 'approve'
+        ? TransactionStatus.COMPLETED
+        : action === 'reject'
+          ? TransactionStatus.FAILED
+          : TransactionStatus.PENDING;
+
+      await Transaction.findOneAndUpdate(
+        { reference: transfer.reference },
+        { status: txnStatus }
+      );
+
+      // If rejected/failed, refund the sender
+      if (action === 'reject') {
+        const { User } = await import('@/models');
+        const sender = await User.findById(transfer.sender);
+        if (sender) {
+          sender.balance += transfer.totalAmount;
+          await sender.save();
+        }
+      }
+
+      return successResponse(transfer, `Transfer ${action} successful`);
+    }
+
+    // Fall back to Transaction collection (admin-created transfers)
     const transaction = await Transaction.findById(transferId);
     if (!transaction) {
       return errorResponse('Transaction not found', 404);

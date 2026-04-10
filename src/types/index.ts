@@ -8,6 +8,7 @@ export enum UserStatus {
   BLOCKED = 'blocked',
   DORMANT = 'dormant',
   PENDING = 'pending',
+  FROZEN = 'frozen',
 }
 
 export enum KycStatus {

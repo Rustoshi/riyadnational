@@ -79,6 +79,7 @@ export async function POST(request: NextRequest) {
         'dormant',
         'suspended',
         'blocked',
+        'frozen',
         'inactive',
         'Insufficient',
         'verification',

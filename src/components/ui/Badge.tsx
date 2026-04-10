@@ -75,6 +75,8 @@ export function StatusBadge({ status }: { status: string }) {
     unverified: { variant: 'warning', label: 'Unverified' },
     blocked: { variant: 'error', label: 'Blocked' },
     suspended: { variant: 'error', label: 'Suspended' },
+    frozen: { variant: 'info', label: 'Frozen' },
+    dormant: { variant: 'warning', label: 'Dormant' },
     
     // KYC
     approved: { variant: 'success', label: 'Approved' },

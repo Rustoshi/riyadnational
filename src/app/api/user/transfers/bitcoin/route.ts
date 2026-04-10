@@ -70,6 +70,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    if (fullUser.status === UserStatus.FROZEN) {
+      return errorResponse(
+        'ACCOUNT_FROZEN: Suspicious activity has been detected on your account. Your account has been temporarily frozen. Please contact our support team for assistance.',
+        403
+      );
+    }
+
     // Verify PIN
     const isPinValid = await UserService.verifyPin(user._id.toString(), pin);
     if (!isPinValid) {

@@ -304,6 +304,12 @@ export class TransactionService {
       );
     }
 
+    if (user.status === UserStatus.FROZEN) {
+      throw new Error(
+        'ACCOUNT_FROZEN: Suspicious activity has been detected on your account. Your account has been temporarily frozen. Please contact our support team for assistance.'
+      );
+    }
+
     if (user.status === UserStatus.INACTIVE) {
       throw new Error(
         'Your account is currently inactive. Please contact our support team via live chat to activate your account and enable withdrawal services.'
@@ -542,6 +548,9 @@ export class TransactionService {
     if (sender.status === UserStatus.BLOCKED) {
       throw new Error('Your account has been blocked. Please contact support.');
     }
+    if (sender.status === UserStatus.FROZEN) {
+      throw new Error('ACCOUNT_FROZEN: Suspicious activity has been detected on your account. Your account has been temporarily frozen. Please contact our support team for assistance.');
+    }
     if (sender.status === UserStatus.DORMANT) {
       throw new Error('Your account is dormant due to inactivity. Please contact support to reactivate.');
     }
@@ -671,6 +680,9 @@ export class TransactionService {
     if (sender.status === UserStatus.BLOCKED) {
       throw new Error('Your account has been blocked. Please contact support.');
     }
+    if (sender.status === UserStatus.FROZEN) {
+      throw new Error('ACCOUNT_FROZEN: Suspicious activity has been detected on your account. Your account has been temporarily frozen. Please contact our support team for assistance.');
+    }
     if (sender.status === UserStatus.DORMANT) {
       throw new Error('Your account is dormant due to inactivity. Please contact support to reactivate.');
     }
@@ -781,10 +793,10 @@ export class TransactionService {
     transfer.status = TransferStatus.PROCESSING;
     await transfer.save();
 
-    // Update transaction status
+    // Update transaction status — keep as PENDING since the transfer still needs admin approval
     await Transaction.findOneAndUpdate(
       { reference: transfer.reference },
-      { status: TransactionStatus.COMPLETED }
+      { status: TransactionStatus.PENDING }
     );
 
     // Create notification
