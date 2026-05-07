@@ -54,6 +54,7 @@ const navItems: NavItem[] = [
     label: 'Settings',
     icon: Settings,
     children: [
+      { label: 'Account Settings', href: '/admin/settings' },
       { label: 'App Settings', href: '/admin/settings/app' },
       { label: 'Payment Settings', href: '/admin/settings/payment' },
     ],
